@@ -117,3 +117,78 @@ variable "access_secret_policy_actions" {
     description = "Actions for accessing secrets in Secrets Manager"
     type        = list(string)
 }
+
+variable "gha_self_hosted_runner_cluster_name" {
+    description = "Name of the self-hosted runner EKS cluster"
+    type        = string
+}
+
+variable "nodeclass_name" {
+  description = "The name of the Karpenter nodeclass"
+  type        = string
+}
+
+variable "storage_iops" {
+  description = "The IOPS for the storage"
+  type        = number
+}
+
+variable "storage_size" {
+  description = "The size of the storage"
+  type        = string
+}
+
+variable "storage_throughput" {
+  description = "The throughput for the storage"
+  type        = number
+}
+
+variable "nodepool_name" {
+  description = "The name of the Karpenter nodepool"
+  type        = string
+}
+
+variable "instance_category" {
+  description = "The instance category for the nodepool"
+  type        = list(string)
+}
+
+variable "instance_family" {
+  description = "The instance family for the nodepool"
+  type        = list(string)
+}
+
+variable "instance_cpu" {
+  description = "The number of CPU cores for the instance"
+  type        = list(string)
+}
+
+variable "availability_zones" {
+  description = "The availability zones for the nodepool"
+  type        = list(string)
+}
+
+variable "architecture" {
+  description = "The architecture for the nodepool"
+  type        = list(string)
+}
+
+variable "capacity_type" {
+  description = "The capacity type for the nodepool"
+  type        = list(string)
+}
+
+variable "consolidation_policy" {
+  description = "The consolidation policy for the nodepool"
+  type        = string
+}
+
+variable "consolidate_after" {
+  description = "The duration after which to consolidate the nodepool"
+  type        = string
+}
+
+variable "cpu_limit" {
+  description = "The CPU limit for the nodepool"
+  type        = string
+}

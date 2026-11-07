@@ -1,56 +1,52 @@
-# resource "aws_iam_role" "aws_load_balancer_controller_app_irsa" {
-#     name = "aws-load-balancer-controller-app-irsa-role"
+# Cluster Role for EKS Auto Mode
+resource "aws_iam_role" "eks_auto_cluster" {
+  name = "AmazonEKSAutoClusterRole"
 
-#     assume_role_policy = jsonencode({
-#         Version = "2012-10-17"
-#         Statement = [
-#             {
-#                 Effect = "Allow"
-#                 Principal = {
-#                     Federated = aws_iam_openid_connect_provider.eks_oidc.arn
-#                 }
-#                 Action = "sts:AssumeRoleWithWebIdentity"
-#                 Condition = {
-#                     StringEquals = {
-#                         "${replace(aws_iam_openid_connect_provider.eks_oidc.url, "https://", "")}:aud" = "sts.amazonaws.com"
-#                         "${replace(aws_iam_openid_connect_provider.eks_oidc.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
-#                     }
-#                 }
-#             }
-#         ]
-#     })
-# }
+  assume_role_policy = file("dependencies/cluster-trust-policy.json")
+}
 
-# resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_app_irsa_policy_attachment" {
-#     policy_arn = "arn:aws:iam::829007908826:policy/AWSLoadBalancerControllerIAMPolicy"
-#     role       = aws_iam_role.aws_load_balancer_controller_app_irsa.name
-# }
+resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+  role       = aws_iam_role.eks_auto_cluster.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+}
 
-# resource "aws_iam_role" "xray_daemon_app_irsa" {
-#     name = "xray-daemon-app-irsa-role"
+resource "aws_iam_role_policy_attachment" "eks_compute_policy" {
+  role       = aws_iam_role.eks_auto_cluster.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSComputePolicy"
+}
 
-#     assume_role_policy = jsonencode({
-#         Version = "2012-10-17"
-#         Statement = [
-#             {
-#                 Effect = "Allow"
-#                 Principal = {
-#                     Federated = aws_iam_openid_connect_provider.eks_oidc.arn
-#                 }
-#                 Action = "sts:AssumeRoleWithWebIdentity"
-#                 Condition = {
-#                     StringEquals = {
-#                         "${replace(aws_iam_openid_connect_provider.eks_oidc.url, "https://", "")}:aud" = "sts.amazonaws.com"
-#                         "${replace(aws_iam_openid_connect_provider.eks_oidc.url, "https://", "")}:sub" = "system:serviceaccount:default:xray-daemon"
-#                     }
-#                 }
-#             }
-#         ]
-#     })
-# }
+resource "aws_iam_role_policy_attachment" "eks_block_storage_policy" {
+  role       = aws_iam_role.eks_auto_cluster.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSBlockStoragePolicyV2"
+}
 
-# resource "aws_iam_role_policy_attachment" "xray_daemon_app_irsa_policy_attachment" {
-#     policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
-#     role       = aws_iam_role.xray_daemon_app_irsa.name
-# }
-# # Note: iam_policy.json = https://github.com/kubernetes-sigs/aws-load-balancer-controller/blob/main/docs/install/iam_policy.json
+resource "aws_iam_role_policy_attachment" "eks_load_balancing_policy" {
+  role       = aws_iam_role.eks_auto_cluster.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSLoadBalancingPolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "eks_networking_policy" {
+  role       = aws_iam_role.eks_auto_cluster.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSNetworkingPolicy"
+}
+
+# Worker Node Roles and Policies
+resource "aws_iam_role" "eks_auto_node" {
+  name = "AmazonEKSAutoNodeRole"
+  assume_role_policy = file("dependencies/node-trust-policy.json")
+}
+
+resource "aws_iam_role_policy_attachment" "worker_node_policy" {
+  role       = aws_iam_role.eks_auto_node.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodeMinimalPolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "ecr_readonly" {
+  role       = aws_iam_role.eks_auto_node.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
+}
+
+resource "aws_iam_role_policy_attachment" "image_registry_public_readonly" {
+  role       = aws_iam_role.eks_auto_node.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticContainerRegistryPublicReadOnly"
+}

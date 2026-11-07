@@ -69,32 +69,6 @@ resource "aws_route_table_association" "aws_vpc_private_subnet_rt_assoc" {
     route_table_id = aws_route_table.app_vpc_private_rt.id
 }
 
-# DHCP option set for VPC
-# resource "aws_vpc_dhcp_options" "app_vpc_dhcp_options" {
-#     domain_name         = var.domain_name
-#     domain_name_servers = var.domain_name_servers
-#     tags = {
-#         Name        = var.dhcp_option_set_name
-#         Environment = var.environment
-#     }
-# }
-
-# resource "aws_vpc_dhcp_options_association" "app_vpc_dhcp_options_assoc" {
-#     vpc_id          = aws_vpc.app_vpc.id
-#     dhcp_options_id = aws_vpc_dhcp_options.app_vpc_dhcp_options.id
-# }
-
-# resource "aws_vpc_endpoint" "app_vpc_s3_endpoint" {
-#     vpc_id            = aws_vpc.app_vpc.id
-#     service_name      = "com.amazonaws.${var.aws_region}.s3"
-#     vpc_endpoint_type = "Gateway"
-#     route_table_ids   = [aws_route_table.app_vpc_private_rt.id]
-#     tags = {
-#         Name        = "${var.vpc_name}-s3-endpoint"
-#         Environment = var.environment
-#     }
-# }
-
 # EKS Restriction, Two Private Subnets required
 resource "aws_subnet" "app_vpc_private_subnets_2" {
     vpc_id            = aws_vpc.app_vpc.id
