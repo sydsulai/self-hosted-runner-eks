@@ -1,14 +1,14 @@
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  name: m7a-spot
+  name: m7i-spot
 spec:
   template:
     spec:
       nodeClassRef:
         group: eks.amazonaws.com
         kind: NodeClass
-        name: m7a-spot
+        name: m7i-spot
 
       requirements:
             - key: "eks.amazonaws.com/instance-category"
@@ -16,7 +16,7 @@ spec:
               values: ["m"]
             - key: "eks.amazonaws.com/instance-family"
               operator: In
-              values: ["m7a"]
+              values: ["m7i"]
             - key: "eks.amazonaws.com/instance-cpu"
               operator: In
               values: ["8"]

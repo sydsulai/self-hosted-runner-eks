@@ -427,7 +427,7 @@ template:
             value: "false"
   spec:
     nodeSelector:
-      karpenter.sh/nodepool: m7a-spot
+      karpenter.sh/nodepool: m7i-spot
       karpenter.sh/capacity-type: spot
     containers:
       - name: runner

@@ -329,11 +329,12 @@ template:
           - name: dind-externals
             mountPath: /home/runner/tmpDir
       - name: dind
-        image: docker:dind
+        image: docker:27-dind
         args:
           - dockerd
           - --host=unix:///var/run/docker.sock
           - --group=$(DOCKER_GROUP_GID)
+          - --iptables=true
         env:
           - name: DOCKER_GROUP_GID
             value: "123"
@@ -345,7 +346,7 @@ template:
             command:
               - docker
               - info
-          initialDelaySeconds: 0
+          initialDelaySeconds: 5
           failureThreshold: 24
           periodSeconds: 5
         volumeMounts:
@@ -355,20 +356,6 @@ template:
             mountPath: /var/run
           - name: dind-externals
             mountPath: /home/runner/externals
-      containers:
-      - name: runner
-        image: ghcr.io/actions/actions-runner:latest
-        command: ["/home/runner/run.sh"]
-        env:
-          - name: DOCKER_HOST
-            value: unix:///var/run/docker.sock
-          - name: RUNNER_WAIT_FOR_DOCKER_IN_SECONDS
-            value: "120"
-        volumeMounts:
-          - name: work
-            mountPath: /home/runner/_work
-          - name: dind-sock
-            mountPath: /var/run
       volumes:
       - name: work
         emptyDir: {}
@@ -427,23 +414,19 @@ template:
   ##           value: "true"
   spec:
     nodeSelector:
-      karpenter.sh/nodepool: m7a-spot
+      karpenter.sh/nodepool: m7i-spot
       karpenter.sh/capacity-type: spot
     containers:
-    tolerations:
       - name: runner
         image: ghcr.io/actions/actions-runner:latest
         command: ["/home/runner/run.sh"]
         resources:
           requests:
-            cpu: 500m
-            memory: 512Mi
-        securityContext:
-          readOnlyRootFilesystem: true
-          allowPrivilegeEscalation: false
-          capabilities:
-            add:
-            - NET_ADMIN
+            cpu: "4"
+            memory: "16Gi"
+          limits:
+            cpu: "8"
+            memory: "32Gi"
 ## Optional controller service account that needs to have required Role and RoleBinding
 ## to operate this gha-runner-scale-set installation.
 ## The helm chart will try to find the controller deployment and its service account at installation time.
