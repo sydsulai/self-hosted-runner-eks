@@ -34,13 +34,13 @@ access_secret_policy_actions = [
 ]
 
 gha_self_hosted_runner_cluster_name = "gha-self-hosted-runners-cluster"
-nodeclass_name           = "m7a-spot"
+nodeclass_name           = "m7i-spot"
 storage_iops            = 5000
 storage_size            = "50Gi"
 storage_throughput      = 500
-nodepool_name           = "m7a-spot"
+nodepool_name           = "m7i-spot"
 instance_category       = ["m"]
-instance_family         = ["m7a"]
+instance_family         = ["m7i"]
 instance_cpu            = ["8"]
 availability_zones      = ["ap-south-1a", "ap-south-1b"]
 architecture            = ["amd64"]

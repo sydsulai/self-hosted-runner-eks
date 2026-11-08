@@ -119,20 +119,25 @@ runnerScaleSetName: "arc-runner-set-kubernetes"
 containerMode:
   type: "kubernetes-novolume"  ## type can be set to "dind", "kubernetes", or "kubernetes-novolume"
 #   ## the following is required when containerMode.type=kubernetes
-#   kubernetesModeWorkVolumeClaim:
-#     accessModes: ["ReadWriteOnce"]
-#     # For local testing, use https://github.com/openebs/dynamic-localpv-provisioner/blob/develop/docs/quickstart.md to provide dynamic provision volume with storageClassName: openebs-hostpath
-#     storageClassName: "dynamic-blob-storage"
-#     resources:
-#       requests:
-#         storage: 1Gi
-#   kubernetesModeAdditionalRoleRules: []
+  kubernetesModeWorkVolumeClaim:
+    accessModes: ["ReadWriteOnce"]
+    # For local testing, use https://github.com/openebs/dynamic-localpv-provisioner/blob/develop/docs/quickstart.md to provide dynamic provision volume with storageClassName: openebs-hostpath
+    storageClassName: "dynamic-blob-storage"
+    resources:
+      requests:
+        storage: 1Gi
+  kubernetesModeAdditionalRoleRules: []
 #
 
 ## listenerTemplate is the PodSpec for each listener Pod
 ## For reference: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodSpec
 listenerTemplate:
   spec:
+    nodeSelector:
+      karpenter.sh/nodepool: system
+    tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
     containers:
     # Use this section to append additional configuration to the listener container.
     # If you change the name of the container, the configuration will not be applied to the listener,
@@ -421,6 +426,9 @@ template:
           - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
             value: "false"
   spec:
+    nodeSelector:
+      karpenter.sh/nodepool: m7i-spot
+      karpenter.sh/capacity-type: spot
     containers:
       - name: runner
         image: ghcr.io/actions/actions-runner:latest
