@@ -12,7 +12,7 @@ resource "aws_eks_cluster" "gha_self_hosted_runners_cluster" {
 
   compute_config {
     enabled       = true
-    node_pools    = ["general-purpose"]
+    node_pools    = ["system"]
     node_role_arn = aws_iam_role.eks_auto_node.arn
   }
 

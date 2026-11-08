@@ -66,9 +66,12 @@ resources: {}
 #   cpu: 100m
 #   memory: 128Mi
 
-nodeSelector: {}
+nodeSelector:
+  karpenter.sh/nodepool: system
 
-tolerations: []
+tolerations:
+- key: "CriticalAddonsOnly"
+  operator: "Exists"
 
 affinity: {}
 

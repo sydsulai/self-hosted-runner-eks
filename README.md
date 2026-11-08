@@ -29,7 +29,7 @@ Yes, a single runner group can have multiple runner scale sets assigned to it**
 1. ARC - Actions Runner Controller
 1. Runner Group - security boundary and governance tool used to collect sets of runners and control which organizations or repositories have permission to use them
 1. Runner Scale Set - group of identical (homogeneous) runners that automatically scales up or down based on the actual demand of your workflows
-1. Controller Manager
+1. Controller Manager(Pod)
     1. AutoScaling Listener Controller
     1. AutoScalingRunner Set Controller
     1. Ephemeral Controller
@@ -37,7 +37,9 @@ Yes, a single runner group can have multiple runner scale sets assigned to it**
 
 1. Runner ScalerSet Listener(Pod) - 1 Listener / 1 Runner Scale Set
 1. Ephemeral Runner Set (Custom Resource)
-1. Container Mode
+    1. Runner Pods
+
+1. Container Mode - Jobs which run in containers with container: key.
 1. Runner Container Hooks - Whenever a job runs in container mode, job pod relies on runner container hooks to create new pod in the same namespace through Kubernetes API.
 1. Listener Pods - 
 1. Listener Endpoints - 
@@ -45,8 +47,11 @@ Yes, a single runner group can have multiple runner scale sets assigned to it**
 ## Queries
 
 1. What is system node_pools?
+1. What is Node Pools and Node Classes
 2. What are node_pools in karpenter is it applicable for other types of deployment?
 
 ## Troubleshooting
 
 1. [Kubernetes Mode](https://docs.github.com/en/actions/how-tos/manage-runners/use-actions-runner-controller/deploy-runner-scale-sets#troubleshooting-kubernetes-mode)Jobs without a job container are forbidden on this runner, please add a 'container:' to your job or contact your self-hosted runner administrator.
+
+1. Error: INSTALLATION FAILED: AutoscalingRunnerSet.actions.github.com "arc-runner-set-kubernetes" is invalid: spec.template.spec.volumes[0].ephemeral.volumeClaimTemplate.spec: Invalid value: "null": spec.template.spec.volumes[0].ephemeral.volumeClaimTemplate.spec in body must be of type object: "null"
