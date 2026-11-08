@@ -62,23 +62,3 @@ resource "aws_iam_openid_connect_provider" "eks_oidc" {
         "9e99a48a9960b14926bb7f3b02e22da0ecd6c7e5"
     ]
 }
-
-resource "aws_eks_access_entry" "nodeclass_access" {
-  cluster_name  = var.gha_self_hosted_runner_cluster_name
-  principal_arn = "arn:aws:iam::829007908826:user/tf-user"
-  type          = "STANDARD"
-}
-
-resource "aws_eks_access_policy_association" "nodeclass_policy" {
-  cluster_name  = var.gha_self_hosted_runner_cluster_name
-  principal_arn = "arn:aws:iam::829007908826:user/tf-user"
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-
-  access_scope {
-    type = "cluster"
-  }
-
-  depends_on = [
-    aws_eks_access_entry.nodeclass_access
-  ]
-}
