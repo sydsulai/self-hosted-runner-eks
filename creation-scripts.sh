@@ -28,10 +28,6 @@ log "Creating Kubernetes resources..."
   aws eks update-kubeconfig --region "${AWS_REGION}" --name "${CLUSTER_NAME}"
   cd "kubernetes-components"
   kubectl apply -f namespaces.yaml
-)
-
-(
-  cd "secrets"
   kubectl apply -f github_app_secrets.yaml
 )
 
@@ -45,7 +41,7 @@ log "Installing ARC Helm releases..."
   cd "arc-components"
   helm install arc ./gha-runner-scale-set-controller --namespace "${ARC_SYSTEM_NAMESPACE}"
   helm install arc-runner-set-dind ./gha-runner-scale-set-dind --namespace "${ARC_RUNNERS_NAMESPACE}"
-  helm install arc-runner-set-kubernetes ./gha-runner-scale-set-kubernetes --namespace "${ARC_RUNNERS_NAMESPACE}"
+  # helm install arc-runner-set-kubernetes ./gha-runner-scale-set-kubernetes --namespace "${ARC_RUNNERS_NAMESPACE}"
 )
 
 log "Kubernetes and ARC resources created successfully."
